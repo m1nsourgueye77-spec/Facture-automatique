@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factures - Gi.Code</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+}
+
+header {
+  background: linear-gradient(90deg, #1f4aa8, #2b7cff);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.form-section {
+  max-width: 500px;
+  margin: 40px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #1f4aa8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #163a82;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+  <h1>🧾 Facturation automatique - Gi.Code</h1>
+</header>
+
+<section class="form-section">
+
+  <input type="text" id="clientFacture" placeholder="Nom client">
+  <input type="text" id="produitFacture" placeholder="Produit">
+  <input type="number" id="prixFacture" placeholder="Prix (FCFA)">
+
+  <button onclick="genererFacture()">📄 Générer PDF</button>
+</section>
+
+<script>
+function genererFacture() {
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  let client = document.getElementById("clientFacture").value;
+  let produit = document.getElementById("produitFacture").value;
+  let prix = document.getElementById("prixFacture").value;
+
+  if (!client || !produit || !prix) {
+    alert("Veuillez remplir tous les champs");
+    return;
+  }
+
+  // 📅 Date automatique
+  let date = new Date().toLocaleDateString("fr-FR");
+
+  // 🎨 En-tête facture
+  doc.setFontSize(18);
+  doc.setTextColor(31, 74, 168);
+  doc.text("FACTURE OFFICIELLE", 70, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(0, 0, 0);
+  doc.text("Gi.Code - Gestion intelligente", 70, 28);
+
+  // 📅 Date
+  doc.text("Date: " + date, 10, 40);
+
+  // 📦 Infos client
+  doc.setFontSize(12);
+  doc.text("Client: " + client, 10, 55);
+  doc.text("Produit: " + produit, 10, 65);
+  doc.text("Prix unitaire: " + prix + " FCFA", 10, 75);
+
+  // 💰 Total
+  doc.setFontSize(14);
+  doc.setTextColor(0, 120, 0);
+  doc.text("TOTAL À PAYER: " + prix + " FCFA", 10, 95);
+
+  // 🧾 Pied de page
+  doc.setFontSize(10);
+  doc.setTextColor(120, 120, 120);
+  doc.text("Merci pour votre confiance - Gi.Code", 10, 130);
+
+  doc.save("facture_gicode.pdf");
+}
+</script>
+
+</body>
+</html>
