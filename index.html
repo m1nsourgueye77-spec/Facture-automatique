@@ -55,6 +55,24 @@ button {
 button:hover {
   background: #163a82;
 }
+
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    background: linear-gradient(90deg, #1f4aa8, #0d1b2a);
+    color: white;
+    font-size: 14px;
+}
+
+footer strong {
+    font-size: 16px;
+    color: #ffffff;
+}
+
+
+
 </style>
 
 </head>
@@ -62,7 +80,8 @@ button:hover {
 <body>
 
 <header>
-  <h1>🧾 Facturation automatique - Gi.Code</h1>
+  <h1>🧾 Facturation automatique</h1>
+  <p>Quincaillerie Laye - Gestion simple et rapide des factures</p>
 </header>
 
 <section class="form-section">
@@ -95,7 +114,7 @@ function genererFacture() {
   // 🎨 En-tête facture
   doc.setFontSize(18);
   doc.setTextColor(31, 74, 168);
-  doc.text("FACTURE OFFICIELLE", 70, 20);
+  doc.text("FACTURE", 70, 20);
 
   doc.setFontSize(11);
   doc.setTextColor(0, 0, 0);
@@ -123,6 +142,15 @@ function genererFacture() {
   doc.save("facture_gicode.pdf");
 }
 </script>
+
+
+
+
+
+<footer>
+  <strong>🧾 Gestion Quincaillerie</strong>
+  <p>© 2026 — Conçu par Gi.Code Formation</p>
+</footer>
 
 </body>
 </html>
