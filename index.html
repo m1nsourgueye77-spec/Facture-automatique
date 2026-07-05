@@ -24,6 +24,30 @@ header {
   text-align: center;
 }
 
+
+header {
+  background: linear-gradient(90deg, #1f4aa8, #0d1b2a);
+  color: white;
+  text-align: center;
+  padding: 25px 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border-bottom: 3px solid #2b7cff;
+}
+
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+header p {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
 .form-section {
   max-width: 500px;
   margin: 40px auto;
@@ -73,78 +97,547 @@ footer strong {
 
 
 
+
+
+
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: linear-gradient(90deg, #1f4aa8, #0d1b2a);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+  /* 🌟 animation slide */
+  animation: slideDown 0.8s ease-in-out;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.menu a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.menu a:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.datetime {
+  text-align: right;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* 🌟 animation */
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+
+.page {
+  display: none;
+  padding: 20px;
+  text-align: center;
+}
+
+.page.active {
+  display: block;
+}
+
+
+
+.form-section {
+  max-width: 450px;
+  margin: 20px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
 </style>
 
 </head>
 
 <body>
 
-<header>
-  <h1>🧾 Facturation automatique</h1>
-  <p>Quincaillerie Laye - Gestion simple et rapide des factures</p>
+<header class="topbar">
+
+    <!-- Logo -->
+    <div class="logo">
+        🏪 Gestion Quincaillerie
+    </div>
+
+    <!-- Navigation -->
+    <nav class="menu">
+        <a href="#" onclick="showPage('dashboard')">📊 Dashboard</a>
+        <a href="#" onclick="showPage('stock')">📦 Stock</a>
+        <a href="#" onclick="showPage('factures')">🧾 Factures</a>
+    </nav>
+
+    <!-- Date et heure -->
+    <div class="datetime">
+        <span id="date"></span><br>
+        <span id="time"></span>
+    </div>
+
 </header>
 
-<section class="form-section">
 
-  <input type="text" id="clientFacture" placeholder="Nom client">
-  <input type="text" id="produitFacture" placeholder="Produit">
-  <input type="number" id="prixFacture" placeholder="Prix (FCFA)">
+<!-- ================= DASHBOARD ================= -->
 
-  <button onclick="genererFacture()">📄 Générer PDF</button>
+<section id="dashboard" class="page">
+
+    <h2>📊 Tableau de bord</h2>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>📦 Produits</h3>
+            <h2 id="nbProduits">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>💰 Valeur du stock</h3>
+            <h2><span id="totalStock">0</span> FCFA</h2>
+        </div>
+
+        <div class="card">
+            <h3>⚠️ Stock faible</h3>
+            <h2 id="stockFaible">0</h2>
+        </div>
+
+    </div>
+
 </section>
 
+
+<!-- ================= FACTURE ================= -->
+
+<section id="factures" class="page active">
+
+<h2>🧾 Facturation</h2>
+
+<div class="form-section">
+
+<select id="typeDocument" onchange="adapterFormulaire()">
+
+<option value="Facture client">🧾 Facture Client</option>
+<option value="Facture fournisseur">🏪 Facture Fournisseur</option>
+<option value="Bon de commande">📋 Bon de commande</option>
+<option value="Bon d'achat">🛒 Bon d'achat</option>
+<option value="Devis">📄 Devis</option>
+
+</select>
+
+<input
+type="text"
+id="nomPartenaire"
+placeholder="Nom du client ou fournisseur">
+
+<p id="infoPartenaire" style="font-size:13px;color:gray;"></p>
+
+<input
+type="text"
+id="produitFacture"
+placeholder="Produit">
+
+<input
+type="number"
+id="quantiteFacture"
+placeholder="Quantité">
+
+<input
+type="text"
+id="uniteFacture"
+placeholder="Unité (Pièce, Carton, Sac...)">
+
+<input
+type="number"
+id="prixFacture"
+placeholder="Prix unitaire de vente">
+
+<input
+type="number"
+id="remiseFacture"
+placeholder="Remise (FCFA)"
+value="0">
+
+<button onclick="genererFacture()">
+
+📄 Générer la facture PDF
+
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ================= STOCK ================= -->
+
+<section id="stock" class="page">
+
+<h2>📦 Gestion du Stock</h2>
+
+<div class="form-section">
+
+<input
+type="text"
+id="nomProduit"
+placeholder="Nom du produit">
+
+<input
+type="number"
+id="qteProduit"
+placeholder="Quantité">
+
+<select id="uniteProduit">
+
+<option>Pièce(s)</option>
+<option>Carton(s)</option>
+<option>Sac(s)</option>
+<option>Boîte(s)</option>
+<option>Mètre(s)</option>
+<option>Kilogramme(s)</option>
+<option>Litre(s)</option>
+<option>Paquet(s)</option>
+<option>Rouleau(x)</option>
+<option>Tonnes(s)</option>
+</select>
+
+<input
+type="number"
+id="prixAchat"
+placeholder="Prix d'achat unitaire">
+
+<input
+type="number"
+id="prixVente"
+placeholder="Prix de vente unitaire">
+
+<button onclick="ajouterProduit()">
+
+➕ Ajouter au stock
+
+</button>
+
+<hr>
+
+<input
+type="text"
+id="recherche"
+placeholder="🔍 Rechercher un produit..."
+onkeyup="rechercherProduit()">
+
+</div>
+
+<h3>
+
+💰 Valeur totale du stock :
+<span id="totalStock">0</span> FCFA
+
+</h3>
+
+<div id="listeStock"></div>
+
+</section>
+
+
 <script>
+
 function genererFacture() {
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-  let client = document.getElementById("clientFacture").value;
-  let produit = document.getElementById("produitFacture").value;
-  let prix = document.getElementById("prixFacture").value;
+    let type = document.getElementById("typeDocument").value;
+    let partenaire = document.getElementById("nomPartenaire").value;
 
-  if (!client || !produit || !prix) {
-    alert("Veuillez remplir tous les champs");
+    let produit = document.getElementById("produitFacture").value;
+   let quantite = nettoyerNombre(document.getElementById("quantiteFacture").value);
+
+    let unite = document.getElementById("uniteFacture").value;
+
+   let prix = nettoyerNombre(document.getElementById("prixFacture").value);
+
+    let remise = nettoyerNombre(document.getElementById("remiseFacture").value);
+
+    if (!partenaire || !produit || quantite <= 0 || prix <= 0) {
+        alert("Veuillez remplir correctement tous les champs.");
+        return;
+    }
+
+    let total = (quantite * prix) - remise;
+
+    let date = new Date().toLocaleDateString("fr-FR");
+
+    // ===== En-tête =====
+
+    doc.setFontSize(20);
+    doc.setTextColor(31,74,168);
+    doc.text(type, 60,20);
+
+    doc.setFontSize(11);
+    doc.setTextColor(0,0,0);
+
+    doc.text("Quincaillerie Laye",70,28);
+
+    doc.text("Date : "+date,10,40);
+
+   doc.text(type + " : " + partenaire, 10, 55);
+
+    doc.text("Produit : "+produit,10,65);
+
+    doc.text("Quantité : "+quantite+" "+unite,10,75);
+
+   doc.text(
+  "Prix unitaire : " + prix.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " FCFA",
+  10, 85
+);
+
+   doc.text("Remise : "+remise.toLocaleString("fr-FR")+" FCFA",10,95);
+
+    
+
+
+    doc.setFontSize(15);
+    doc.setTextColor(0,120,0);
+
+   doc.text(
+  "TOTAL : " + total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " FCFA",
+  10, 110
+);
+
+    doc.setFontSize(10);
+    doc.setTextColor(120,120,120);
+
+    doc.text("Merci pour votre confiance.",10,140);
+
+    doc.save(type+".pdf");
+}
+
+
+
+function updateDateTime() {
+  const now = new Date();
+
+  const date = now.toLocaleDateString("fr-FR");
+  const time = now.toLocaleTimeString("fr-FR");
+
+  document.getElementById("date").textContent = "📅 " + date;
+  document.getElementById("time").textContent = "⏱️ " + time;
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+
+
+function showPage(pageId) {
+
+  // cacher toutes les pages
+  document.querySelectorAll(".page").forEach(p => {
+    p.classList.remove("active");
+  });
+
+  // afficher page choisie
+  document.getElementById(pageId).classList.add("active");
+}
+
+
+function nettoyerNombre(val) {
+  return Number(String(val).replace(/[^\d.-]/g, ""));
+}
+
+
+function adapterFormulaire() {
+
+  let type = document.getElementById("typeDocument").value;
+  let info = document.getElementById("infoPartenaire");
+  let champ = document.getElementById("nomPartenaire");
+
+ let label = "";
+
+if (type === "Facture client") {
+  label = "Client";
+}
+else if (type === "Facture fournisseur") {
+  label = "Fournisseur";
+}
+else if (type === "Bon de commande") {
+  label = "Destinataire";
+}
+else if (type === "Bon d'achat") {
+  label = "Vendeur";
+}
+else if (type === "Devis") {
+  label = "Client / Prospect";
+}
+else {
+  label = "Partenaire";
+}
+
+doc.text(label + " : " + partenaire, 10, 55);
+  
+}
+
+
+let stock = JSON.parse(localStorage.getItem("stock")) || [];
+
+// ➕ AJOUT
+function ajouterProduit() {
+
+  let nom = document.getElementById("nomProduit").value;
+  let qte = document.getElementById("qteProduit").value;
+  let unite = document.getElementById("uniteProduit").value;
+  let prix = document.getElementById("prixAchat").value;
+
+  if (!nom || !qte || !prix) {
+    alert("Remplir tous les champs");
     return;
   }
 
-  // 📅 Date automatique
-  let date = new Date().toLocaleDateString("fr-FR");
-
-  // 🎨 En-tête facture
-  doc.setFontSize(18);
-  doc.setTextColor(31, 74, 168);
-  doc.text("FACTURE", 70, 20);
-
-  doc.setFontSize(11);
-  doc.setTextColor(0, 0, 0);
-  doc.text("Gi.Code - Gestion intelligente", 70, 28);
-
-  // 📅 Date
-  doc.text("Date: " + date, 10, 40);
-
-  // 📦 Infos client
-  doc.setFontSize(12);
-  doc.text("Client: " + client, 10, 55);
-  doc.text("Produit: " + produit, 10, 65);
-  doc.text("Prix unitaire: " + prix + " FCFA", 10, 75);
-
-  // 💰 Total
-  doc.setFontSize(14);
-  doc.setTextColor(0, 120, 0);
-  doc.text("TOTAL À PAYER: " + prix + " FCFA", 10, 95);
-
-  // 🧾 Pied de page
-  doc.setFontSize(10);
-  doc.setTextColor(120, 120, 120);
-  doc.text("Merci pour votre confiance - Gi.Code", 10, 130);
-
-  doc.save("facture_gicode.pdf");
+  stock.push({
+    id: Date.now(),
+    nom: nom,
+    qte: Number(qte),
+    unite: unite,
+    prix: Number(prix)
+});
+  save();
 }
+
+// 💾 SAVE
+function save() {
+  localStorage.setItem("stock", JSON.stringify(stock));
+  afficherStock();
+}
+
+// 📋 AFFICHER
+function afficherStock() {
+
+  let zone = document.getElementById("listeStock");
+  zone.innerHTML = "";
+
+  let total = 0;
+
+  stock.forEach(p => {
+
+    total += p.qte * p.prix;
+
+    let alert = p.qte < 5 ? "style='border:2px solid red'" : "";
+
+    zone.innerHTML += `
+      <div ${alert} style="background:white;margin:10px;padding:10px;border-radius:8px;">
+
+        📦 <strong>${p.nom}</strong><br>
+        📊 Quantité : ${p.qte} ${p.unite}<br>
+💰 Prix d'achat : ${Number(p.prix).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} FCFA
+
+        <button onclick="editProduit(${p.id})">✏️ Modifier</button>
+        <button onclick="supprimerProduit(${p.id})">❌ Supprimer</button>
+        <button onclick="envoyerFacture(
+'${p.nom}',
+${p.prix},
+${p.qte},
+'${p.unite}'
+)">
+🧾 Facture
+</button>
+
+  
+        </div>
+    `;
+  });
+
+  document.getElementById("totalStock").textContent = total;
+}
+
+// ❌ SUPPRIMER
+function supprimerProduit(id) {
+  stock = stock.filter(p => p.id !== id);
+  save();
+}
+
+// ✏️ MODIFIER
+function editProduit(id) {
+
+  let p = stock.find(x => x.id === id);
+
+  let newNom = prompt("Nom produit", p.nom);
+  let newQte = prompt("Quantité", p.qte);
+  let newPrix = prompt("Prix", p.prix);
+
+  if (newNom && newQte && newPrix) {
+    p.nom = newNom;
+    p.qte = Number(newQte);
+    p.prix = Number(newPrix);
+    save();
+  }
+}
+
+// 🔍 RECHERCHE
+function rechercherProduit() {
+
+  let val = document.getElementById("recherche").value.toLowerCase();
+
+  let filtre = stock.filter(p =>
+    p.nom.toLowerCase().includes(val)
+  );
+
+  let zone = document.getElementById("listeStock");
+  zone.innerHTML = "";
+
+  filtre.forEach(p => {
+    zone.innerHTML += `
+      <div style="background:white;margin:10px;padding:10px;border-radius:8px;">
+        📦 ${p.nom} | ${p.qte} | ${p.prix} FCFA
+      </div>
+    `;
+  });
+}
+
+// 🧾 ENVOYER VERS FACTURE
+function envoyerFacture(nom, prix, qte, unite) {
+
+    document.getElementById("produitFacture").value = nom;
+    document.getElementById("prixFacture").value = prix;
+    document.getElementById("quantiteFacture").value = qte;
+    document.getElementById("uniteFacture").value = unite;
+
+    showPage("factures");
+}
+
+
+
+// 🔁 INIT
+window.onload = afficherStock;
+
+
+
+
 </script>
-
-
-
 
 
 <footer>
