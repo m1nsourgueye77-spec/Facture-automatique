@@ -64,17 +64,18 @@ async function genererFacture() {
 
     const doc = new jsPDF();
 
-    doc.setFontSize(20);
-    doc.text("FACTURE", 85, 20);
+  doc.setFontSize(30);
+doc.text("FACTURE", 75, 25);
 
-    doc.setFontSize(12);
-    doc.text("Client : " + client, 20, 50);
-    doc.text("Produit : " + produit, 20, 65);
-    doc.text("Montant : " + prix + " FCFA", 20, 80);
+doc.setFontSize(16);
+doc.text("Client : " + client, 20, 55);
+doc.text("Produit : " + produit, 20, 75);
+doc.text("Montant : " + prix + " FCFA", 20, 95);
 
-    doc.line(20, 90, 190, 90);
+doc.line(20, 110, 190, 110);
 
-    doc.text("Merci pour votre confiance.", 20, 110);
+doc.setFontSize(14);
+doc.text("Merci pour votre confiance.", 20, 135);
 
     doc.save("Facture_" + client + ".pdf");
 }
